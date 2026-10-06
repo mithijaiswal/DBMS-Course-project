@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --canvas: #FAF8F5;
+  --surface: #FFFFFF;
+  --surface-alt: #F6F3ED;
+  --border-warm: #EAE5DC;
+  --border-subtle: #F0ECE4;
+  --text-main: #2A2521;
+  --text-muted: #746C63;
+  --text-faint: #A39B90;
+  
+  --primary-terracotta: #C86446;
+  --primary-hover: #B25538;
+  --primary-soft: #FDF3EF;
+  --primary-border: #F3CABE;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --pastel-sage-bg: #EDF5F0;
+  --pastel-sage-text: #2C6645;
+  --pastel-sage-border: #C8E3D2;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --pastel-honey-bg: #FEF7E9;
+  --pastel-honey-text: #966512;
+  --pastel-honey-border: #F7DFB3;
+
+  --pastel-sky-bg: #EFF4FA;
+  --pastel-sky-text: #275685;
+  --pastel-sky-border: #CDE0F3;
+
+  --pastel-rose-bg: #FDF1F0;
+  --pastel-rose-text: #B43834;
+  --pastel-rose-border: #F8CBC9;
+
+  --pastel-lavender-bg: #F5F1FA;
+  --pastel-lavender-text: #664391;
+  --pastel-lavender-border: #DDD1EF;
+
+  --pastel-sand-bg: #F6F3EB;
+  --pastel-sand-text: #766958;
+  --pastel-sand-border: #E5DFD3;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--canvas);
+  color: var(--text-main);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars for minimalist dashboard */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #DDD7CD;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C4BCB0;
+}
+
+/* Glass & Card styles */
+.warm-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-warm);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(60, 45, 30, 0.03), 0 6px 16px -4px rgba(60, 45, 30, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.warm-card:hover {
+  border-color: #DFD7CA;
+  box-shadow: 0 4px 20px -2px rgba(60, 45, 30, 0.06);
+}
+
+.warm-input {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-warm);
+  color: var(--text-main);
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+}
+
+.warm-input:focus {
+  outline: none;
+  border-color: var(--primary-terracotta);
+  box-shadow: 0 0 0 3px rgba(200, 100, 70, 0.12);
+}
+
+/* Pill badge utility classes */
+.badge-status-pending {
+  background-color: var(--pastel-sand-bg);
+  color: var(--pastel-sand-text);
+  border: 1px solid var(--pastel-sand-border);
+}
+.badge-status-assigned {
+  background-color: var(--pastel-sky-bg);
+  color: var(--pastel-sky-text);
+  border: 1px solid var(--pastel-sky-border);
+}
+.badge-status-inprogress {
+  background-color: var(--pastel-honey-bg);
+  color: var(--pastel-honey-text);
+  border: 1px solid var(--pastel-honey-border);
+}
+.badge-status-completed {
+  background-color: var(--pastel-sage-bg);
+  color: var(--pastel-sage-text);
+  border: 1px solid var(--pastel-sage-border);
+}
+.badge-status-closed {
+  background-color: var(--pastel-lavender-bg);
+  color: var(--pastel-lavender-text);
+  border: 1px solid var(--pastel-lavender-border);
+}
+.badge-status-critical {
+  background-color: var(--pastel-rose-bg);
+  color: var(--pastel-rose-text);
+  border: 1px solid var(--pastel-rose-border);
 }

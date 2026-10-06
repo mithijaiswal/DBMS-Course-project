@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ASSETS {
+  AssetID      Int       @id @default(autoincrement())
+  RoomID       Int
+  AssetName    String    @db.VarChar(100)
+  Type         String    @db.VarChar(50)
+  PurchaseDate DateTime? @db.Date
+  Status       String    @db.VarChar(30)
+  ROOMS        ROOMS     @relation(fields: [RoomID], references: [RoomID], onDelete: NoAction, onUpdate: NoAction, map: "assets_ibfk_1")
+
+  @@index([RoomID], map: "RoomID")
+}
+
+model ASSIGNMENT {
+  AssignmentID   Int         @id @default(autoincrement())
+  RequestID      Int
+  TechnicianID   Int
+  AssignmentDate DateTime    @db.Date
+  CompletionDate DateTime?   @db.Date
+  REQUESTS       REQUESTS    @relation(fields: [RequestID], references: [RequestID], onDelete: NoAction, onUpdate: NoAction, map: "assignment_ibfk_1")
+  TECHNICIANS    TECHNICIANS @relation(fields: [TechnicianID], references: [TechnicianID], onDelete: NoAction, onUpdate: NoAction, map: "assignment_ibfk_2")
+  WORK_LOG       WORK_LOG[]
+
+  @@index([RequestID], map: "RequestID")
+  @@index([TechnicianID], map: "TechnicianID")
+}
+
+model BUILDINGS {
+  BuildingID     Int     @id @default(autoincrement())
+  Name           String  @db.VarChar(100)
+  Address        String  @db.VarChar(200)
+  CampusLocation String  @db.VarChar(100)
+  ROOMS          ROOMS[]
+}
+
+model CATEGORIES {
+  CategoryID   Int        @id @default(autoincrement())
+  CategoryName String     @unique(map: "CategoryName") @db.VarChar(50)
+  REQUESTS     REQUESTS[]
+}
+
+model COST {
+  CostID       Int      @id @default(autoincrement())
+  RequestID    Int
+  CostType     String   @db.VarChar(50)
+  Amount       Decimal  @db.Decimal(10, 2)
+  IncurredDate DateTime @db.Date
+  REQUESTS     REQUESTS @relation(fields: [RequestID], references: [RequestID], onDelete: NoAction, onUpdate: NoAction, map: "cost_ibfk_1")
+
+  @@index([RequestID], map: "RequestID")
+}
+
+model FEEDBACK {
+  FeedbackID     Int      @id @default(autoincrement())
+  RequestID      Int
+  Rating         Int
+  Comments       String?  @db.VarChar(500)
+  SubmissionDate DateTime @db.Date
+  REQUESTS       REQUESTS @relation(fields: [RequestID], references: [RequestID], onDelete: NoAction, onUpdate: NoAction, map: "feedback_ibfk_1")
+
+  @@index([RequestID], map: "RequestID")
+}
+
+model MATERIALS {
+  MaterialID        Int                 @id @default(autoincrement())
+  MaterialName      String              @db.VarChar(100)
+  UnitCost          Decimal             @db.Decimal(10, 2)
+  QuantityInStock   Int
+  REQUEST_MATERIALS REQUEST_MATERIALS[]
+}
+
+model PRIORITY {
+  PriorityID   Int        @id @default(autoincrement())
+  LevelName    String     @unique(map: "LevelName") @db.VarChar(30)
+  ResponseTime String     @db.VarChar(50)
+  REQUESTS     REQUESTS[]
+}
+
+model REQUESTS {
+  RequestID         Int                 @id @default(autoincrement())
+  UserID            Int
+  RoomID            Int
+  CategoryID        Int
+  PriorityID        Int
+  Description       String              @db.VarChar(500)
+  DateSubmitted     DateTime            @db.Date
+  CurrentStatus     String              @db.VarChar(30)
+  ASSIGNMENT        ASSIGNMENT[]
+  COST              COST[]
+  FEEDBACK          FEEDBACK[]
+  USERS             USERS               @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "requests_ibfk_1")
+  ROOMS             ROOMS               @relation(fields: [RoomID], references: [RoomID], onDelete: NoAction, onUpdate: NoAction, map: "requests_ibfk_2")
+  CATEGORIES        CATEGORIES          @relation(fields: [CategoryID], references: [CategoryID], onDelete: NoAction, onUpdate: NoAction, map: "requests_ibfk_3")
+  PRIORITY          PRIORITY            @relation(fields: [PriorityID], references: [PriorityID], onDelete: NoAction, onUpdate: NoAction, map: "requests_ibfk_4")
+  REQUEST_MATERIALS REQUEST_MATERIALS[]
+  STATUS_HISTORY    STATUS_HISTORY[]
+
+  @@index([CategoryID], map: "CategoryID")
+  @@index([PriorityID], map: "PriorityID")
+  @@index([RoomID], map: "RoomID")
+  @@index([UserID], map: "UserID")
+}
+
+model REQUEST_MATERIALS {
+  RequestID    Int
+  MaterialID   Int
+  QuantityUsed Int
+  REQUESTS     REQUESTS  @relation(fields: [RequestID], references: [RequestID], onDelete: NoAction, onUpdate: NoAction, map: "request_materials_ibfk_1")
+  MATERIALS    MATERIALS @relation(fields: [MaterialID], references: [MaterialID], onDelete: NoAction, onUpdate: NoAction, map: "request_materials_ibfk_2")
+
+  @@id([RequestID, MaterialID])
+  @@index([MaterialID], map: "MaterialID")
+}
+
+model ROOMS {
+  RoomID     Int        @id @default(autoincrement())
+  BuildingID Int
+  RoomNumber String     @db.VarChar(20)
+  FloorLevel Int
+  ASSETS     ASSETS[]
+  REQUESTS   REQUESTS[]
+  BUILDINGS  BUILDINGS  @relation(fields: [BuildingID], references: [BuildingID], onDelete: NoAction, onUpdate: NoAction, map: "rooms_ibfk_1")
+
+  @@index([BuildingID], map: "BuildingID")
+}
+
+model STATUS_HISTORY {
+  StatusLogID      Int      @id @default(autoincrement())
+  RequestID        Int
+  StatusChangeDate DateTime @db.Date
+  PreviousStatus   String?  @db.VarChar(30)
+  NewStatus        String   @db.VarChar(30)
+  REQUESTS         REQUESTS @relation(fields: [RequestID], references: [RequestID], onDelete: NoAction, onUpdate: NoAction, map: "status_history_ibfk_1")
+
+  @@index([RequestID], map: "RequestID")
+}
+
+model TECHNICIANS {
+  TechnicianID       Int          @id @default(autoincrement())
+  FirstName          String       @db.VarChar(50)
+  LastName           String       @db.VarChar(50)
+  Specialization     String       @db.VarChar(50)
+  AvailabilityStatus String       @db.VarChar(30)
+  ASSIGNMENT         ASSIGNMENT[]
+}
+
+model USERS {
+  UserID      Int        @id @default(autoincrement())
+  FirstName   String     @db.VarChar(50)
+  LastName    String     @db.VarChar(50)
+  Email       String     @unique(map: "Email") @db.VarChar(100)
+  PhoneNumber String?    @db.VarChar(15)
+  UserRole    String     @db.VarChar(30)
+  REQUESTS    REQUESTS[]
+}
+
+model WORK_LOG {
+  LogID        Int        @id @default(autoincrement())
+  AssignmentID Int
+  LogEntryDate DateTime   @db.Date
+  Description  String     @db.VarChar(500)
+  HoursSpent   Decimal    @db.Decimal(5, 2)
+  ASSIGNMENT   ASSIGNMENT @relation(fields: [AssignmentID], references: [AssignmentID], onDelete: NoAction, onUpdate: NoAction, map: "work_log_ibfk_1")
+
+  @@index([AssignmentID], map: "AssignmentID")
+}
