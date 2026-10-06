@@ -94,7 +94,7 @@ mysql -u root < Presentation-II/database_setup.sql
 
 ### 2. Install Dependencies & Start Web Application
 ```bash
-cd web
+cd Presentation-III/source_code
 bun install        # or npm install
 bun run dev        # starts development server on http://localhost:3000
 ```
