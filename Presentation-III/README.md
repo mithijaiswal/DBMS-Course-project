@@ -3,7 +3,6 @@
 **Project Title:** Campus Facility Maintenance Request Management System  
 **Serial No:** 41  
 **Learner:** Mithi Jaiswal (25WU0102158) - AIML Panthers  
-**Co-Presenter:** Soumya Purohit (25WU0102272) - AIML Whales  
 **Database:** MySQL (`campus_facility_management`)  
 **Technology Stack:** Next.js 16 (Turbopack, React 19), Prisma ORM 6.4, TypeScript, Tailwind CSS  
 

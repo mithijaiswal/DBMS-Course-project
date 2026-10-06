@@ -10,7 +10,6 @@
 - **Student Name:** Mithi Jaiswal
 - **Roll Number:** 25WU0102158
 - **Section:** AIML Panthers
-- **Co-Presenter:** Soumya Purohit (Roll No: 25WU0102272, Section: AIML Whales)
 - **Course:** Database Management Systems (DBMS PBL)
 - **Academic Year:** 2026–2027
 - **Institution:** Woxsen University

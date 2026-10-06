@@ -3,7 +3,6 @@
 **Author:** Mithi Jaiswal  
 **Roll Number:** 25WU0102158  
 **Section:** AIML Panthers  
-**Co-Presenter:** Soumya Purohit (Roll No: 25WU0102272, Section: AIML Whales)  
 **Project Serial Number:** 41  
 **Course:** Database Management Systems (DBMS Course Project)  
 **Institution:** Woxsen University  
