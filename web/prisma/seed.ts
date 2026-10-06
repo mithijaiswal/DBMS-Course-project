@@ -66,7 +66,7 @@ export async function seedDatabase() {
     { UserID: 3, FirstName: 'Arjun', LastName: 'Mehta', Email: 'arjun@woxsen.edu.in', PhoneNumber: '9876543212', UserRole: 'Faculty' },
     { UserID: 4, FirstName: 'Ananya', LastName: 'Rao', Email: 'ananya@woxsen.edu.in', PhoneNumber: '9876543213', UserRole: 'Student' },
     { UserID: 5, FirstName: 'Rahul', LastName: 'Verma', Email: 'rahul@woxsen.edu.in', PhoneNumber: '9876543214', UserRole: 'Faculty' },
-    { UserID: 6, FirstName: 'Soumya', LastName: 'Purohit', Email: 'soumya@woxsen.edu.in', PhoneNumber: '9876543215', UserRole: 'Student' },
+    { UserID: 6, FirstName: 'Siddharth', LastName: 'Sen', Email: 'siddharth@woxsen.edu.in', PhoneNumber: '9876543215', UserRole: 'Student' },
     { UserID: 7, FirstName: 'Priya', LastName: 'Nair', Email: 'priya@woxsen.edu.in', PhoneNumber: '9876543216', UserRole: 'Staff' },
     { UserID: 8, FirstName: 'Dr. Ramesh', LastName: 'K', Email: 'ramesh@woxsen.edu.in', PhoneNumber: '9876543217', UserRole: 'Faculty' },
     { UserID: 9, FirstName: 'Sneha', LastName: 'Iyer', Email: 'sneha@woxsen.edu.in', PhoneNumber: '9876543218', UserRole: 'Student' },

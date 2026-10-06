@@ -3,7 +3,6 @@
 -- DBMS Course Project: PBL Review II & III
 -- Database Implementation: MySQL 8.x / 9.x
 -- Author: Mithi Jaiswal (25WU0102158) - AIML Panthers
--- Co-Presenter: Soumya Purohit (25WU0102272) - AIML Whales
 -- Institution: Woxsen University
 -- ============================================================================
 
@@ -263,7 +262,7 @@ INSERT INTO USERS (UserID, FirstName, LastName, Email, PhoneNumber, UserRole) VA
 (3, 'Arjun', 'Mehta', 'arjun@woxsen.edu.in', '9876543212', 'Faculty'),
 (4, 'Ananya', 'Rao', 'ananya@woxsen.edu.in', '9876543213', 'Student'),
 (5, 'Rahul', 'Verma', 'rahul@woxsen.edu.in', '9876543214', 'Faculty'),
-(6, 'Soumya', 'Purohit', 'soumya@woxsen.edu.in', '9876543215', 'Student'),
+(6, 'Siddharth', 'Sen', 'siddharth@woxsen.edu.in', '9876543215', 'Student'),
 (7, 'Priya', 'Nair', 'priya@woxsen.edu.in', '9876543216', 'Staff'),
 (8, 'Dr. Ramesh', 'K', 'ramesh@woxsen.edu.in', '9876543217', 'Faculty'),
 (9, 'Sneha', 'Iyer', 'sneha@woxsen.edu.in', '9876543218', 'Student'),
