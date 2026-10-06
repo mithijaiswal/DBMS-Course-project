@@ -89,7 +89,7 @@ export function NewRequestModal({
                 Log Maintenance Request
               </h3>
               <p className="text-[11px] text-[#7E7468]">
-                Insert record into MySQL `REQUESTS` table
+                Submit a new campus maintenance ticket
               </p>
             </div>
           </div>

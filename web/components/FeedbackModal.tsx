@@ -68,7 +68,7 @@ export function FeedbackModal({
                 Service Feedback & Rating
               </h3>
               <p className="text-[11px] text-[#7E7468]">
-                Inserts into MySQL `FEEDBACK` table
+                Rate the quality of service received
               </p>
             </div>
           </div>

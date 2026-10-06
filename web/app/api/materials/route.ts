@@ -85,3 +85,25 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+// DELETE /api/materials?id=<MaterialID>
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: 'MaterialID is required' }, { status: 400 });
+    }
+
+    const matId = Number(id);
+
+    // Cascade: remove all request_material links first, then delete the material
+    await prisma.rEQUEST_MATERIALS.deleteMany({ where: { MaterialID: matId } });
+    await prisma.mATERIALS.delete({ where: { MaterialID: matId } });
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

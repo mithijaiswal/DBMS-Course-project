@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Campus Facility Maintenance System | DBMS PBL',
+  title: 'Campus Facility Maintenance System',
   description:
-    'Design and Implementation of a Relational Database Management System for Campus Facility Maintenance (MySQL, 3NF, Prisma ORM). Mithi Jaiswal (25WU0102158) & Soumya Purohit (25WU0102272).',
+    'Campus Facility Maintenance Request Management System — Woxsen University. Manage maintenance requests, technicians, inventory, and campus infrastructure.',
 };
 
 export default function RootLayout({
@@ -20,8 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-[#FAF8F5] text-[#2A2521] antialiased selection:bg-[#F3CABE] selection:text-[#C86446]">
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body
+        className="min-h-screen bg-[#FAF8F5] text-[#2A2521] antialiased selection:bg-[#F3CABE] selection:text-[#C86446]"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

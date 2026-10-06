@@ -72,7 +72,7 @@ export function WorkLogModal({
                 Log Technician Labor
               </h3>
               <p className="text-[11px] text-[#7E7468]">
-                Inserts into MySQL `WORK_LOG` table
+                Record time and notes for completed work
               </p>
             </div>
           </div>

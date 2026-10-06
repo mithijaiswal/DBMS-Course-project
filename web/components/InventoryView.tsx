@@ -9,6 +9,8 @@ import {
   RefreshCw,
   X,
   AlertCircle,
+  Trash2,
+  Pencil,
 } from 'lucide-react';
 
 interface InventoryViewProps {
@@ -28,6 +30,16 @@ export function InventoryView({ materials, onRefresh }: InventoryViewProps) {
   const [initialStock, setInitialStock] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [deleteConfirmMaterial, setDeleteConfirmMaterial] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Edit form states
+  const [editMaterial, setEditMaterial] = useState<any>(null);
+  const [editName, setEditName] = useState('');
+  const [editUnitCost, setEditUnitCost] = useState('');
+  const [editQuantity, setEditQuantity] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState('');
 
   const handleRestock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +100,54 @@ export function InventoryView({ materials, onRefresh }: InventoryViewProps) {
     }
   };
 
+  const handleDeleteMaterial = async (materialId: number) => {
+    try {
+      setIsDeleting(true);
+      await fetch(`/api/materials?id=${materialId}`, { method: 'DELETE' });
+      setDeleteConfirmMaterial(null);
+      onRefresh();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const openEditModal = (m: any) => {
+    setEditMaterial(m);
+    setEditName(m.MaterialName);
+    setEditUnitCost(String(Number(m.UnitCost).toFixed(2)));
+    setEditQuantity(String(m.QuantityInStock));
+    setEditError('');
+  };
+
+  const handleEditMaterial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editMaterial) return;
+    try {
+      setIsEditing(true);
+      setEditError('');
+      const res = await fetch('/api/materials', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          MaterialID: editMaterial.MaterialID,
+          QuantityInStock: parseInt(editQuantity, 10),
+          UnitCost: parseFloat(editUnitCost),
+          MaterialName: editName.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to update material');
+      setEditMaterial(null);
+      onRefresh();
+    } catch (err: any) {
+      setEditError(err.message || 'Error updating material');
+    } finally {
+      setIsEditing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -100,7 +160,7 @@ export function InventoryView({ materials, onRefresh }: InventoryViewProps) {
             </span>
           </h2>
           <p className="text-xs text-[#7C7367] mt-1">
-            Real-time campus maintenance supply depot linked to MySQL <code className="bg-[#FAF2EB] text-[#C86446] px-1 rounded">MATERIALS</code> and <code className="bg-[#FAF2EB] text-[#C86446] px-1 rounded">REQUEST_MATERIALS</code>.
+            Track spare parts and materials used across all campus maintenance requests.
           </p>
         </div>
         <button
@@ -165,16 +225,32 @@ export function InventoryView({ materials, onRefresh }: InventoryViewProps) {
                     Used in <strong>{usageCount}</strong> ticket{usageCount !== 1 ? 's' : ''}
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <button
-                      onClick={() => {
-                        setSelectedMaterial(m);
-                        setShowRestockModal(true);
-                      }}
-                      className="px-2.5 py-1 rounded-md bg-[#FAF8F5] hover:bg-[#F0EAE0] border border-[#E2DBD0] text-[#554C41] text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer inline-flex"
-                    >
-                      <RefreshCw className="w-3 h-3 text-[#C86446]" />
-                      <span>Restock</span>
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => {
+                          setSelectedMaterial(m);
+                          setShowRestockModal(true);
+                        }}
+                        className="px-2.5 py-1 rounded-md bg-[#FAF8F5] hover:bg-[#F0EAE0] border border-[#E2DBD0] text-[#554C41] text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <RefreshCw className="w-3 h-3 text-[#C86446]" />
+                        <span>Restock</span>
+                      </button>
+                      <button
+                        onClick={() => openEditModal(m)}
+                        className="p-1.5 rounded-md text-[#948A7D] hover:text-[#275685] hover:bg-[#EFF4FA] border border-transparent hover:border-[#CDE0F3] transition-colors cursor-pointer"
+                        title="Edit material"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirmMaterial(m)}
+                        className="p-1.5 rounded-md text-[#948A7D] hover:text-[#B43834] hover:bg-[#FDF1F0] border border-transparent hover:border-[#F8CBC9] transition-colors cursor-pointer"
+                        title="Delete material"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -314,6 +390,123 @@ export function InventoryView({ materials, onRefresh }: InventoryViewProps) {
                   className="px-4 py-2 rounded-lg bg-[#C86446] text-white hover:bg-[#B25538] font-semibold cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving...' : 'Create Material'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm Dialog */}
+      {deleteConfirmMaterial && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl border border-[#F8CBC9] shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-150">
+            <div className="p-6 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-[#FDF1F0] text-[#B43834] flex items-center justify-center">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-sm text-[#2A2521]">Delete Material?</h3>
+              <p className="text-xs text-[#7C7367] leading-relaxed">
+                This will permanently remove <strong>{deleteConfirmMaterial.MaterialName}</strong> and all its usage records from maintenance requests. This cannot be undone.
+              </p>
+            </div>
+            <div className="px-6 py-3.5 bg-[#FAF8F5] border-t border-[#F0EBE3] flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmMaterial(null)}
+                className="px-4 py-2 rounded-lg border border-[#EAE5DC] text-xs font-semibold text-[#695F52] hover:bg-[#F2ECE2] transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => handleDeleteMaterial(deleteConfirmMaterial.MaterialID)}
+                className="px-4 py-2 rounded-lg bg-[#B43834] text-white hover:bg-[#9B2A27] text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Material'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Material Modal */}
+      {editMaterial && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-[#EAE5DC] shadow-xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#F0EBE3] bg-[#FAF8F5] flex items-center justify-between">
+              <h3 className="font-bold text-sm text-[#2A2521] flex items-center gap-2">
+                <Pencil className="w-4 h-4 text-[#C86446]" />
+                Edit Material
+              </h3>
+              <button
+                onClick={() => setEditMaterial(null)}
+                className="p-1 rounded-lg text-[#948A7D] hover:text-[#2A2521] cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditMaterial} className="p-6 space-y-4 text-xs">
+              {editError && (
+                <div className="p-3 rounded-lg bg-[#FDF1F0] border border-[#F8CBC9] text-[#B43834] flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{editError}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-medium text-[#4A433A] mb-1">Material Name</label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full warm-input"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-medium text-[#4A433A] mb-1">Unit Cost (₹)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    required
+                    value={editUnitCost}
+                    onChange={(e) => setEditUnitCost(e.target.value)}
+                    className="w-full warm-input"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium text-[#4A433A] mb-1">Quantity in Stock</label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={editQuantity}
+                    onChange={(e) => setEditQuantity(e.target.value)}
+                    className="w-full warm-input"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end space-x-2 border-t border-[#F0EBE3]">
+                <button
+                  type="button"
+                  onClick={() => setEditMaterial(null)}
+                  className="px-4 py-2 rounded-lg border border-[#EAE5DC] text-[#695F52] hover:bg-[#F7F4EE] cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isEditing}
+                  className="px-4 py-2 rounded-lg bg-[#C86446] text-white hover:bg-[#B25538] font-semibold cursor-pointer disabled:opacity-50"
+                >
+                  {isEditing ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </form>

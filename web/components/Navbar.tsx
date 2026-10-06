@@ -4,9 +4,7 @@ import React from 'react';
 import {
   Wrench,
   Database,
-  RefreshCw,
   Plus,
-  Terminal,
   Layers,
   CheckCircle2,
 } from 'lucide-react';
@@ -15,18 +13,12 @@ interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenNewRequest: () => void;
-  onReseed: () => void;
-  isReseeding: boolean;
-  dbStatus: { ok: boolean; count: number };
 }
 
 export function Navbar({
   activeTab,
   setActiveTab,
   onOpenNewRequest,
-  onReseed,
-  isReseeding,
-  dbStatus,
 }: NavbarProps) {
   const tabs = [
     { id: 'requests', label: 'Maintenance Requests', icon: Wrench },
@@ -34,8 +26,6 @@ export function Navbar({
     { id: 'technicians', label: 'Technicians', icon: CheckCircle2 },
     { id: 'inventory', label: 'Inventory & Materials', icon: Database },
     { id: 'infrastructure', label: 'Campus Assets', icon: Layers },
-    { id: 'sql', label: 'Presentation-II SQL Console', icon: Terminal },
-    { id: 'schema', label: 'Relational Schema (3NF)', icon: Database },
   ];
 
   return (
@@ -48,37 +38,16 @@ export function Navbar({
               CF
             </div>
             <div>
-              <div className="font-semibold text-[#2A2521] text-sm tracking-tight flex items-center gap-2">
+              <div className="font-semibold text-[#2A2521] text-sm tracking-tight">
                 Campus Facility Maintenance System
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#FAF0EB] text-[#C86446] border border-[#F3CABE]">
-                  DBMS PBL • Serial #41
-                </span>
               </div>
               <div className="text-[#877E73] text-[11px]">
-                Woxsen University • Presenters: <span className="font-medium text-[#4A433A]">Mithi Jaiswal (25WU0102158)</span> & <span className="font-medium text-[#4A433A]">Soumya Purohit (25WU0102272)</span>
+                Woxsen University • <span className="font-medium text-[#4A433A]">Mithi Jaiswal (25WU0102158)</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center space-x-3">
-            {/* Live Database status pill */}
-            <div className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[#EDF5F0] border border-[#C8E3D2] text-[#2C6645] text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#3D8C5E] animate-pulse" />
-              <span className="font-medium">MySQL: campus_facility_management</span>
-              <span className="text-[#659778] text-[10px]">({dbStatus.count} total records)</span>
-            </div>
-
-            {/* Reset / Seed DB button */}
-            <button
-              onClick={onReseed}
-              disabled={isReseeding}
-              title="Reset and populate database with Presentation-II baseline + realistic campus data"
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-[#EAE5DC] bg-[#FAF8F5] text-[#5C5247] hover:bg-[#F2EEE6] hover:text-[#2A2521] text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isReseeding ? 'animate-spin text-[#C86446]' : ''}`} />
-              <span>{isReseeding ? 'Seeding...' : 'Reset & Seed DB'}</span>
-            </button>
-
             {/* Quick Create Ticket */}
             <button
               onClick={onOpenNewRequest}

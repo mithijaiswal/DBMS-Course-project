@@ -72,3 +72,29 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+// DELETE /api/technicians?id=<TechnicianID>
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: 'TechnicianID is required' }, { status: 400 });
+    }
+
+    const techId = Number(id);
+
+    // Cascade: delete work logs, then assignments, then the technician
+    const assignments = await prisma.aSSIGNMENT.findMany({ where: { TechnicianID: techId } });
+    for (const a of assignments) {
+      await prisma.wORK_LOG.deleteMany({ where: { AssignmentID: a.AssignmentID } });
+    }
+    await prisma.aSSIGNMENT.deleteMany({ where: { TechnicianID: techId } });
+    await prisma.tECHNICIANS.delete({ where: { TechnicianID: techId } });
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
