@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
-    const { MaterialID, AddQuantity, QuantityInStock, UnitCost } = body;
+    const { MaterialID, MaterialName, AddQuantity, QuantityInStock, UnitCost } = body;
 
     if (!MaterialID) {
       return NextResponse.json({ success: false, error: 'MaterialID is required' }, { status: 400 });
@@ -65,6 +65,9 @@ export async function PATCH(req: NextRequest) {
     }
 
     const updateData: any = {};
+    if (MaterialName !== undefined && MaterialName.trim() !== '') {
+      updateData.MaterialName = MaterialName.trim();
+    }
     if (AddQuantity !== undefined) {
       updateData.QuantityInStock = existing.QuantityInStock + parseInt(AddQuantity, 10);
     } else if (QuantityInStock !== undefined) {

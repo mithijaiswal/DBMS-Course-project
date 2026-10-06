@@ -11,10 +11,23 @@ export async function GET() {
         }),
         prisma.bUILDINGS.findMany({
           orderBy: { BuildingID: 'asc' },
+          include: {
+            ROOMS: {
+              include: {
+                ASSETS: true,
+                REQUESTS: {
+                  select: {
+                    RequestID: true,
+                    CurrentStatus: true,
+                  },
+                },
+              },
+            },
+          },
         }),
         prisma.rOOMS.findMany({
           orderBy: { RoomNumber: 'asc' },
-          include: { BUILDINGS: true },
+          include: { BUILDINGS: true, ASSETS: true },
         }),
         prisma.cATEGORIES.findMany({
           orderBy: { CategoryName: 'asc' },
@@ -29,8 +42,14 @@ export async function GET() {
           orderBy: { MaterialName: 'asc' },
         }),
         prisma.aSSETS.findMany({
-          orderBy: { AssetName: 'asc' },
-          include: { ROOMS: true },
+          orderBy: { AssetID: 'asc' },
+          include: {
+            ROOMS: {
+              include: {
+                BUILDINGS: true,
+              },
+            },
+          },
         }),
       ]);
 
